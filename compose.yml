@@ -1,20 +1,42 @@
 services:
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ./docker/local/ollama/data:/root/.ollama
+    networks:
+      - my-network
+    restart: unless-stopped
+    # GPUを利用する場合は以下のコメントを外してください
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           capabilities: [gpu]
+    #           count: all
+
   open-webui:
     image: ghcr.io/open-webui/open-webui:main
-    container_name: ollama-open-webui-ui-rag
+    container_name: open-webui
     ports:
-      - "8080:8080"
+      - "3000:8080"
     volumes:
-#      - ~/.open-webui:/app/backend/data
-      - ./docker/local/open-webui:/app/backend/data
+      - ./docker/local/open-webui/data:/app/backend/data
     environment:
-      - OLLAMA_BASE_URL=http://host.docker.internal:11434
+      - OLLAMA_BASE_URL=http://ollama:11434
       - WEBUI_SECRET_KEY=${WEBUI_SECRET_KEY}
-      - RAG_EMBEDDING_MODEL=${RAG_EMBEDDING_MODEL}
       - RAG_EMBEDDING_BATCH_SIZE=${RAG_EMBEDDING_BATCH_SIZE}
-      - RAG_RERANKING_MODEL=${RAG_RERANKING_MODEL}
       - CHUNK_SIZE=${CHUNK_SIZE}
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
+    depends_on:
+      - ollama
+    networks:
+      - my-network
     restart: always
+
+networks:
+  my-network:
+    driver: bridge
 

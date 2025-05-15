@@ -1,0 +1,6 @@
+.env
+.idea/
+docker/local/ollama/data/*
+!docker/local/ollama/data/.gitkeep
+docker/local/open-webui/data/*
+!docker/local/open-webui/data/.gitkeep
