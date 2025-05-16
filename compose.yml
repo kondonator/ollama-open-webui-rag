@@ -20,7 +20,7 @@ services:
 
   open-webui:
     image: ghcr.io/open-webui/open-webui:main
-    container_name: open-webui
+    container_name: open-webui-rag
     ports:
       - "3000:8080"
     volumes:
@@ -30,6 +30,7 @@ services:
       - WEBUI_SECRET_KEY=${WEBUI_SECRET_KEY}
       - CHUNK_SIZE=${CHUNK_SIZE}
       - CHUNK_OVERLAP=${CHUNK_OVERLAP}
+      - ENABLE_RAG_HYBRID_SEARCH=${ENABLE_RAG_HYBRID_SEARCH}
       - RAG_EMBEDDING_BATCH_SIZE=${RAG_EMBEDDING_BATCH_SIZE}
       - RAG_EMBEDDING_MODEL=${RAG_EMBEDDING_MODEL}
       - RAG_RERANKING_MODEL=${RAG_RERANKING_MODEL}
@@ -42,4 +43,3 @@ services:
 networks:
   my-network:
     driver: bridge
-
